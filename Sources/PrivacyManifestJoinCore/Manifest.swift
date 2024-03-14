@@ -1,6 +1,6 @@
 struct Manifest: Codable {
     var accessedAPITypes: [APIType]
-    var collectedDataTypes: [CollectedDataType]
+    var collectedDataTypes: CollectedDataTypes
     var tracking: Bool
     var trackingDomains: [String]
 
@@ -14,9 +14,29 @@ struct Manifest: Codable {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.accessedAPITypes = try container.decodeIfPresent([APIType].self, forKey: .accessedAPITypes) ?? []
-        self.collectedDataTypes = try container.decodeIfPresent([CollectedDataType].self, forKey: .collectedDataTypes) ?? []
+        self.collectedDataTypes = try container.decodeIfPresent(
+            CollectedDataTypes.self, forKey: .collectedDataTypes
+        ) ?? CollectedDataTypes(dataTypes: [])
         self.tracking = try container.decodeIfPresent(Bool.self, forKey: .tracking) ?? false
         self.trackingDomains = try container.decodeIfPresent([String].self, forKey: .trackingDomains) ?? []
+    }
+}
+
+struct CollectedDataTypes: Codable {
+    var dataTypes: [CollectedDataType]
+
+    init(dataTypes: [CollectedDataType]) {
+        self.dataTypes = dataTypes
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.dataTypes = try container.decode([CollectedDataType].self)
+    }
+
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.dataTypes)
     }
 }
 
@@ -66,12 +86,17 @@ extension Manifest: Updatable {
             }
         }
         self.accessedAPITypes = currentAPITypesByType.values.sorted(by: { $0.apiTypeName < $1.apiTypeName })
+        self.collectedDataTypes.update(with: other.collectedDataTypes)
+    }
+}
 
+extension CollectedDataTypes: Updatable {
+    mutating func update(with other: CollectedDataTypes) {
         var currentDataTypesByType = Dictionary(
-            self.collectedDataTypes.map { ($0.dataType, $0) },
+            self.dataTypes.map { ($0.dataType, $0) },
             uniquingKeysWith: { $1 }
         )
-        for otherDataType in other.collectedDataTypes {
+        for otherDataType in other.dataTypes {
             if var current = currentDataTypesByType[otherDataType.dataType] {
                 current.update(with: otherDataType)
                 currentDataTypesByType[otherDataType.dataType] = current
@@ -79,6 +104,7 @@ extension Manifest: Updatable {
                 currentDataTypesByType[otherDataType.dataType] = otherDataType
             }
         }
+        self.dataTypes = currentDataTypesByType.values.sorted(by: { $0.dataType < $1.dataType })
     }
 }
 
