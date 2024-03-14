@@ -1,5 +1,5 @@
 struct Manifest: Codable {
-    var accessedAPITypes: [APIType]
+    var accessedAPITypes: APITypes
     var collectedDataTypes: CollectedDataTypes
     var tracking: Bool
     var trackingDomains: [String]
@@ -13,7 +13,9 @@ struct Manifest: Codable {
 
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.accessedAPITypes = try container.decodeIfPresent([APIType].self, forKey: .accessedAPITypes) ?? []
+        self.accessedAPITypes = try container.decodeIfPresent(
+            APITypes.self, forKey: .accessedAPITypes
+        ) ?? APITypes(apiTypes: [])
         self.collectedDataTypes = try container.decodeIfPresent(
             CollectedDataTypes.self, forKey: .collectedDataTypes
         ) ?? CollectedDataTypes(dataTypes: [])
@@ -54,6 +56,24 @@ struct CollectedDataType: Codable {
     }
 }
 
+struct APITypes: Codable {
+    var apiTypes: [APIType]
+
+    init(apiTypes: [APIType]) {
+        self.apiTypes = apiTypes
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.apiTypes = try container.decode([APIType].self)
+    }
+
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.apiTypes)
+    }
+}
+
 struct APIType: Codable {
     var apiTypeName: String
     var apiTypeReasons: [String]
@@ -64,6 +84,8 @@ struct APIType: Codable {
     }
 }
 
+// MARK: -
+
 protocol Updatable {
     mutating func update(with other: Self)
 }
@@ -72,20 +94,7 @@ extension Manifest: Updatable {
     mutating func update(with other: Manifest) {
         self.tracking = self.tracking || other.tracking
         self.trackingDomains = Set(self.trackingDomains).union(other.trackingDomains).sorted()
-
-        var currentAPITypesByType = Dictionary(
-            self.accessedAPITypes.map { ($0.apiTypeName, $0) },
-            uniquingKeysWith: { $1 }
-        )
-        for otherAPIType in other.accessedAPITypes {
-            if var current = currentAPITypesByType[otherAPIType.apiTypeName] {
-                current.update(with: otherAPIType)
-                currentAPITypesByType[otherAPIType.apiTypeName] = current
-            } else {
-                currentAPITypesByType[otherAPIType.apiTypeName] = otherAPIType
-            }
-        }
-        self.accessedAPITypes = currentAPITypesByType.values.sorted(by: { $0.apiTypeName < $1.apiTypeName })
+        self.accessedAPITypes.update(with: other.accessedAPITypes)
         self.collectedDataTypes.update(with: other.collectedDataTypes)
     }
 }
@@ -114,6 +123,24 @@ extension CollectedDataType: Updatable {
         self.linked = self.linked || other.linked
         self.tracking = self.tracking || other.tracking
         self.purposes = Set(self.purposes).union(other.purposes).sorted()
+    }
+}
+
+extension APITypes: Updatable {
+    mutating func update(with other: APITypes) {
+        var currentAPITypesByType = Dictionary(
+            self.apiTypes.map { ($0.apiTypeName, $0) },
+            uniquingKeysWith: { $1 }
+        )
+        for otherAPIType in other.apiTypes {
+            if var current = currentAPITypesByType[otherAPIType.apiTypeName] {
+                current.update(with: otherAPIType)
+                currentAPITypesByType[otherAPIType.apiTypeName] = current
+            } else {
+                currentAPITypesByType[otherAPIType.apiTypeName] = otherAPIType
+            }
+        }
+        self.apiTypes = currentAPITypesByType.values.sorted(by: { $0.apiTypeName < $1.apiTypeName })
     }
 }
 
