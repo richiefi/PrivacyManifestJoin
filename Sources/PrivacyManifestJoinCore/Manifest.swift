@@ -42,8 +42,30 @@ struct CollectedDataTypes: Codable {
     }
 }
 
+struct PrivacyDataType: Codable, Hashable {
+    var rawValue: String
+
+    init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.rawValue = try container.decode(String.self)
+    }
+
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.rawValue)
+    }
+}
+
+extension PrivacyDataType: Comparable {
+    static func < (lhs: PrivacyDataType, rhs: PrivacyDataType) -> Bool { lhs.rawValue < rhs.rawValue }
+}
+
 struct CollectedDataType: Codable {
-    var dataType: String
+    var dataType: PrivacyDataType
     var linked: Bool
     var purposes: [String]
     var tracking: Bool
@@ -74,9 +96,53 @@ struct APITypes: Codable {
     }
 }
 
+struct APIName: Codable, Hashable {
+    var rawValue: String
+
+    init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.rawValue = try container.decode(String.self)
+    }
+
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.rawValue)
+    }
+}
+
+extension APIName: Comparable {
+    static func < (lhs: APIName, rhs: APIName) -> Bool { lhs.rawValue < rhs.rawValue }
+}
+
+struct APIReason: Codable, Hashable {
+    var rawValue: String
+
+    init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.rawValue = try container.decode(String.self)
+    }
+
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.rawValue)
+    }
+}
+
+extension APIReason: Comparable {
+    static func < (lhs: APIReason, rhs: APIReason) -> Bool { lhs.rawValue < rhs.rawValue }
+}
+
 struct APIType: Codable {
-    var apiTypeName: String
-    var apiTypeReasons: [String]
+    var apiTypeName: APIName
+    var apiTypeReasons: [APIReason]
 
     enum CodingKeys: String, CodingKey {
         case apiTypeName = "NSPrivacyAccessedAPIType"
