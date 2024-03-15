@@ -4,22 +4,28 @@ public enum JoinFailure: Error {
     case emptyLocations
 }
 
-public func joinManifests(
-    locations: [URL],
-    output: Output
-) throws {
-    guard let firstURL = locations.first else {
-        throw JoinFailure.emptyLocations
-    }
-    var joined = try manifest(from: firstURL)
-
-    for location in locations.dropFirst() {
-        let manifest = try manifest(from: location)
-        joined.update(with: manifest)
+public enum ManifestJoin {
+    public enum Failure: Error {
+        case emptyLocations
     }
 
-    let outputData = try encoder.encode(joined)
-    try output.write(data: outputData)
+    public static func joinFiles(
+        locations: [URL],
+        output: Output
+    ) throws {
+        guard let firstURL = locations.first else {
+            throw Failure.emptyLocations
+        }
+        var joined = try manifest(from: firstURL)
+
+        for location in locations.dropFirst() {
+            let manifest = try manifest(from: location)
+            joined.update(with: manifest)
+        }
+
+        let outputData = try encoder.encode(joined)
+        try output.write(data: outputData)
+    }
 }
 
 private func manifest(from url: URL) throws -> Manifest {

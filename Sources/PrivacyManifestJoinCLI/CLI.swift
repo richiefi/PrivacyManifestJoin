@@ -12,8 +12,8 @@ struct Join: ParsableCommand {
 
     func run() throws {
         let output: Output = if let url = self.outputFile?.url { .url(url) } else { .stdout }
-        try joinManifests(
-            locations: self.files.map { $0.url }, 
+        try ManifestJoin.joinFiles(
+            locations: self.files.map { $0.url },
             output: output
         )
     }
