@@ -1,4 +1,4 @@
-struct Manifest: Codable {
+public struct Manifest: Codable {
     var accessedAPITypes: APITypes
     var collectedDataTypes: CollectedDataTypes
     var tracking: Bool
@@ -11,7 +11,19 @@ struct Manifest: Codable {
         case trackingDomains = "NSPrivacyTrackingDomains"
     }
 
-    init(from decoder: any Decoder) throws {
+    public init(
+        accessedAPITypes: APITypes,
+        collectedDataTypes: CollectedDataTypes,
+        tracking: Bool,
+        trackingDomains: [String]
+    ) {
+        self.accessedAPITypes = accessedAPITypes
+        self.collectedDataTypes = collectedDataTypes
+        self.tracking = tracking
+        self.trackingDomains = trackingDomains
+    }
+
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.accessedAPITypes = try container.decodeIfPresent(
             APITypes.self, forKey: .accessedAPITypes
@@ -24,51 +36,51 @@ struct Manifest: Codable {
     }
 }
 
-struct CollectedDataTypes: Codable {
-    var dataTypes: [CollectedDataType]
+public struct CollectedDataTypes: Codable {
+    public var dataTypes: [CollectedDataType]
 
-    init(dataTypes: [CollectedDataType]) {
+    public init(dataTypes: [CollectedDataType]) {
         self.dataTypes = dataTypes
     }
 
-    init(from decoder: any Decoder) throws {
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         self.dataTypes = try container.decode([CollectedDataType].self)
     }
 
-    func encode(to encoder: any Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(self.dataTypes)
     }
 }
 
-struct PrivacyDataType: Codable, Hashable {
-    var rawValue: String
+public struct PrivacyDataType: Codable, Hashable {
+    public var rawValue: String
 
-    init(rawValue: String) {
+    public init(rawValue: String) {
         self.rawValue = rawValue
     }
 
-    init(from decoder: any Decoder) throws {
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         self.rawValue = try container.decode(String.self)
     }
 
-    func encode(to encoder: any Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(self.rawValue)
     }
 }
 
 extension PrivacyDataType: Comparable {
-    static func < (lhs: PrivacyDataType, rhs: PrivacyDataType) -> Bool { lhs.rawValue < rhs.rawValue }
+    public static func < (lhs: PrivacyDataType, rhs: PrivacyDataType) -> Bool { lhs.rawValue < rhs.rawValue }
 }
 
-struct CollectedDataType: Codable {
-    var dataType: PrivacyDataType
-    var linked: Bool
-    var purposes: [String]
-    var tracking: Bool
+public struct CollectedDataType: Codable {
+    public var dataType: PrivacyDataType
+    public var linked: Bool
+    public var purposes: [String]
+    public var tracking: Bool
 
     enum CodingKeys: String, CodingKey {
         case dataType = "NSPrivacyCollectedDataType"
@@ -78,75 +90,80 @@ struct CollectedDataType: Codable {
     }
 }
 
-struct APITypes: Codable {
+public struct APITypes: Codable {
     var apiTypes: [APIType]
 
-    init(apiTypes: [APIType]) {
+    public init(apiTypes: [APIType]) {
         self.apiTypes = apiTypes
     }
 
-    init(from decoder: any Decoder) throws {
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         self.apiTypes = try container.decode([APIType].self)
     }
 
-    func encode(to encoder: any Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(self.apiTypes)
     }
 }
 
-struct APIName: Codable, Hashable {
+public struct APIName: Codable, Hashable {
     var rawValue: String
 
-    init(rawValue: String) {
+    public init(rawValue: String) {
         self.rawValue = rawValue
     }
 
-    init(from decoder: any Decoder) throws {
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         self.rawValue = try container.decode(String.self)
     }
 
-    func encode(to encoder: any Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(self.rawValue)
     }
 }
 
 extension APIName: Comparable {
-    static func < (lhs: APIName, rhs: APIName) -> Bool { lhs.rawValue < rhs.rawValue }
+    public static func < (lhs: APIName, rhs: APIName) -> Bool { lhs.rawValue < rhs.rawValue }
 }
 
-struct APIReason: Codable, Hashable {
-    var rawValue: String
+public struct APIReason: Codable, Hashable {
+    public var rawValue: String
 
-    init(rawValue: String) {
+    public init(rawValue: String) {
         self.rawValue = rawValue
     }
 
-    init(from decoder: any Decoder) throws {
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         self.rawValue = try container.decode(String.self)
     }
 
-    func encode(to encoder: any Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(self.rawValue)
     }
 }
 
 extension APIReason: Comparable {
-    static func < (lhs: APIReason, rhs: APIReason) -> Bool { lhs.rawValue < rhs.rawValue }
+    public static func < (lhs: APIReason, rhs: APIReason) -> Bool { lhs.rawValue < rhs.rawValue }
 }
 
-struct APIType: Codable {
-    var apiTypeName: APIName
-    var apiTypeReasons: [APIReason]
+public struct APIType: Codable {
+    public var apiTypeName: APIName
+    public var apiTypeReasons: [APIReason]
 
     enum CodingKeys: String, CodingKey {
         case apiTypeName = "NSPrivacyAccessedAPIType"
         case apiTypeReasons = "NSPrivacyAccessedAPITypeReasons"
+    }
+
+    public init(apiTypeName: APIName, apiTypeReasons: [APIReason]) {
+        self.apiTypeName = apiTypeName
+        self.apiTypeReasons = apiTypeReasons
     }
 }
 
