@@ -13,25 +13,27 @@ public enum ManifestJoin {
         locations: [URL],
         output: Output
     ) throws {
-        guard let firstURL = locations.first else {
-            throw Failure.emptyManifestList
-        }
-        var joined = try manifest(from: firstURL)
-
-        for location in locations.dropFirst() {
-            let manifest = try manifest(from: location)
-            joined.update(with: manifest)
-        }
-
+        let sources = locations.map { location in { try Data(contentsOf: location) } }
+        let joined = try self.joinSources(sources: sources)
         let outputData = try encoder.encode(joined)
         try output.write(data: outputData)
     }
-}
 
-private func manifest(from url: URL) throws -> Manifest {
-    let data = try Data(contentsOf: url)
-    let manifest = try decoder.decode(Manifest.self, from: data)
-    return manifest
+    public static func joinSources(
+        sources: [() throws -> Data]
+    ) throws -> Manifest {
+        guard let firstSource = sources.first else {
+            throw Failure.emptyManifestList
+        }
+        var joined = try decoder.decode(Manifest.self, from: try firstSource())
+
+        for source in sources.dropFirst() {
+            let manifest = try decoder.decode(Manifest.self, from: try source())
+            joined.update(with: manifest)
+        }
+
+        return joined
+    }
 }
 
 let decoder = PropertyListDecoder()
