@@ -52,6 +52,8 @@ public struct CollectedDataTypes: Codable, Equatable {
         var container = encoder.singleValueContainer()
         try container.encode(self.dataTypes)
     }
+
+    public static let empty = CollectedDataTypes(dataTypes: [])
 }
 
 public struct PrivacyDataType: WrappedRawString {
@@ -112,6 +114,8 @@ public struct APITypes: Codable, Equatable {
         var container = encoder.singleValueContainer()
         try container.encode(self.apiTypes)
     }
+
+    public static let empty = APITypes(apiTypes: [])
 }
 
 public struct APIName: WrappedRawString {
