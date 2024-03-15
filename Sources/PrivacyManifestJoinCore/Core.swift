@@ -6,7 +6,7 @@ public enum JoinFailure: Error {
 
 public enum ManifestJoin {
     public enum Failure: Error {
-        case emptyLocations
+        case emptyManifestList
     }
 
     public static func joinFiles(
@@ -14,7 +14,7 @@ public enum ManifestJoin {
         output: Output
     ) throws {
         guard let firstURL = locations.first else {
-            throw Failure.emptyLocations
+            throw Failure.emptyManifestList
         }
         var joined = try manifest(from: firstURL)
 
