@@ -19,7 +19,7 @@ struct Join: ParsableCommand {
     }
 
     func validate() throws {
-        guard !files.isEmpty else {
+        guard !self.files.isEmpty else {
             throw ValidationError("Please provide at least one input file.")
         }
     }
