@@ -54,36 +54,7 @@ public struct CollectedDataTypes: Codable, Equatable {
     }
 }
 
-public protocol ManifestRawString: Codable, Hashable, Comparable, RawRepresentable, ExpressibleByStringLiteral {
-    var rawValue: String { get set }
-
-    init(rawValue: String)
-}
-
-extension ManifestRawString {
-    public static func == (left: Self, right: Self) -> Bool { left.rawValue == right.rawValue }
-    public static func < (left: Self, right: Self) -> Bool { left.rawValue < right.rawValue }
-
-    public init(from decoder: any Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        self.init(rawValue: try container.decode(String.self))
-    }
-
-    public init(stringLiteral value: String) {
-        self.init(rawValue: String(stringLiteral: value))
-    }
-
-    public func encode(to encoder: any Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        self.rawValue.hash(into: &hasher)
-    }
-}
-
-public struct PrivacyDataType: ManifestRawString {
+public struct PrivacyDataType: WrappedRawString {
     public var rawValue: String
 
     public init(rawValue: String) {
@@ -91,7 +62,7 @@ public struct PrivacyDataType: ManifestRawString {
     }
 }
 
-public struct CollectionPurpose: ManifestRawString {
+public struct CollectionPurpose: WrappedRawString {
     public var rawValue: String
 
     public init(rawValue: String) {
@@ -143,7 +114,7 @@ public struct APITypes: Codable, Equatable {
     }
 }
 
-public struct APIName: ManifestRawString {
+public struct APIName: WrappedRawString {
     public var rawValue: String
 
     public init(rawValue: String) {
@@ -151,7 +122,7 @@ public struct APIName: ManifestRawString {
     }
 }
 
-public struct APIReason: ManifestRawString {
+public struct APIReason: WrappedRawString {
     public var rawValue: String
 
     public init(rawValue: String) {
