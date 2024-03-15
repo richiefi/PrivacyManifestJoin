@@ -36,6 +36,26 @@ public enum ManifestJoin {
     }
 }
 
+public enum ManifestConvert {
+    public static func nutritionPrivacyDetailsToManifest(
+        location: URL,
+        output: Output
+    ) throws {
+        let data = try Data(contentsOf: location)
+        let manifest = try self.nutritionPrivacyDetailsToManifest(data: data)
+        let outputData = try encoder.encode(manifest)
+        try output.write(data: outputData)
+    }
+
+    public static func nutritionPrivacyDetailsToManifest(
+        data: Data
+    ) throws -> Manifest {
+        let privacyDetails = try JSONDecoder().decode(NutritionPrivacyDetails.self, from: data)
+        let manifest = try privacyDetails.toManifest()
+        return manifest
+    }
+}
+
 let decoder = PropertyListDecoder()
 
 let encoder: PropertyListEncoder = {
