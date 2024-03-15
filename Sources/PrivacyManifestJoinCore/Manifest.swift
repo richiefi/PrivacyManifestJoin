@@ -1,4 +1,4 @@
-public struct Manifest: Codable {
+public struct Manifest: Codable, Equatable {
     var accessedAPITypes: APITypes
     var collectedDataTypes: CollectedDataTypes
     var tracking: Bool
@@ -36,7 +36,7 @@ public struct Manifest: Codable {
     }
 }
 
-public struct CollectedDataTypes: Codable {
+public struct CollectedDataTypes: Codable, Equatable {
     public var dataTypes: [CollectedDataType]
 
     public init(dataTypes: [CollectedDataType]) {
@@ -54,32 +54,55 @@ public struct CollectedDataTypes: Codable {
     }
 }
 
-public struct PrivacyDataType: Codable, Hashable {
-    public var rawValue: String
+public protocol ManifestRawString: Codable, Hashable, Comparable, RawRepresentable, ExpressibleByStringLiteral {
+    var rawValue: String { get set }
 
-    public init(rawValue: String) {
-        self.rawValue = rawValue
-    }
+    init(rawValue: String)
+}
+
+extension ManifestRawString {
+    public static func == (left: Self, right: Self) -> Bool { left.rawValue == right.rawValue }
+    public static func < (left: Self, right: Self) -> Bool { left.rawValue < right.rawValue }
 
     public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
-        self.rawValue = try container.decode(String.self)
+        self.init(rawValue: try container.decode(String.self))
+    }
+
+    public init(stringLiteral value: String) {
+        self.init(rawValue: String(stringLiteral: value))
     }
 
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(self.rawValue)
     }
+
+    public func hash(into hasher: inout Hasher) {
+        self.rawValue.hash(into: &hasher)
+    }
 }
 
-extension PrivacyDataType: Comparable {
-    public static func < (lhs: PrivacyDataType, rhs: PrivacyDataType) -> Bool { lhs.rawValue < rhs.rawValue }
+public struct PrivacyDataType: ManifestRawString {
+    public var rawValue: String
+
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
 }
 
-public struct CollectedDataType: Codable {
+public struct CollectionPurpose: ManifestRawString {
+    public var rawValue: String
+
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+}
+
+public struct CollectedDataType: Codable, Equatable {
     public var dataType: PrivacyDataType
     public var linked: Bool
-    public var purposes: [String]
+    public var purposes: [CollectionPurpose]
     public var tracking: Bool
 
     enum CodingKeys: String, CodingKey {
@@ -88,9 +111,21 @@ public struct CollectedDataType: Codable {
         case purposes = "NSPrivacyCollectedDataTypePurposes"
         case tracking = "NSPrivacyCollectedDataTypeTracking"
     }
+
+    public init(
+        dataType: PrivacyDataType,
+        linked: Bool,
+        purposes: [CollectionPurpose],
+        tracking: Bool
+    ) {
+        self.dataType = dataType
+        self.linked = linked
+        self.purposes = purposes
+        self.tracking = tracking
+    }
 }
 
-public struct APITypes: Codable {
+public struct APITypes: Codable, Equatable {
     var apiTypes: [APIType]
 
     public init(apiTypes: [APIType]) {
@@ -108,51 +143,23 @@ public struct APITypes: Codable {
     }
 }
 
-public struct APIName: Codable, Hashable {
-    var rawValue: String
-
-    public init(rawValue: String) {
-        self.rawValue = rawValue
-    }
-
-    public init(from decoder: any Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        self.rawValue = try container.decode(String.self)
-    }
-
-    public func encode(to encoder: any Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
-    }
-}
-
-extension APIName: Comparable {
-    public static func < (lhs: APIName, rhs: APIName) -> Bool { lhs.rawValue < rhs.rawValue }
-}
-
-public struct APIReason: Codable, Hashable {
+public struct APIName: ManifestRawString {
     public var rawValue: String
 
     public init(rawValue: String) {
         self.rawValue = rawValue
     }
+}
 
-    public init(from decoder: any Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        self.rawValue = try container.decode(String.self)
-    }
+public struct APIReason: ManifestRawString {
+    public var rawValue: String
 
-    public func encode(to encoder: any Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
+    public init(rawValue: String) {
+        self.rawValue = rawValue
     }
 }
 
-extension APIReason: Comparable {
-    public static func < (lhs: APIReason, rhs: APIReason) -> Bool { lhs.rawValue < rhs.rawValue }
-}
-
-public struct APIType: Codable {
+public struct APIType: Codable, Equatable {
     public var apiTypeName: APIName
     public var apiTypeReasons: [APIReason]
 
