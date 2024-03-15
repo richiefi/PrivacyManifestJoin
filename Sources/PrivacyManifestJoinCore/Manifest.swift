@@ -1,8 +1,8 @@
 public struct Manifest: Codable, Equatable {
-    var accessedAPITypes: APITypes
-    var collectedDataTypes: CollectedDataTypes
-    var tracking: Bool
-    var trackingDomains: [String]
+    public var accessedAPITypes: APITypes
+    public var collectedDataTypes: CollectedDataTypes
+    public var tracking: Bool
+    public var trackingDomains: [String]
 
     enum CodingKeys: String, CodingKey {
         case accessedAPITypes = "NSPrivacyAccessedAPITypes"
