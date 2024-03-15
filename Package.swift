@@ -16,6 +16,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
+        .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "1.3.0"),
     ],
     targets: [
         .executableTarget(
@@ -26,5 +27,12 @@ let package = Package(
             ]
         ),
         .target(name: "PrivacyManifestJoinCore"),
+        .testTarget(
+            name: "CoreTests",
+            dependencies: [
+                "PrivacyManifestJoinCore",
+                .product(name: "CustomDump", package: "swift-custom-dump"),
+            ]
+        ),
     ]
 )
