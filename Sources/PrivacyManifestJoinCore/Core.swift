@@ -38,10 +38,10 @@ public enum ManifestJoin {
 
 public enum ManifestConvert {
     public static func nutritionPrivacyDetailsToManifest(
-        location: URL,
+        input: Input,
         output: Output
     ) throws {
-        let data = try Data(contentsOf: location)
+        let data = try input.read()
         let manifest = try self.nutritionPrivacyDetailsToManifest(data: data)
         let outputData = try encoder.encode(manifest)
         try output.write(data: outputData)
