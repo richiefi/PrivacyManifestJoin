@@ -19,7 +19,7 @@ struct Join: ParsableCommand {
     var files: [FileURL]
 
     @Option(help: "Output file or - for stdout. Defaults to stdout", transform: Output.init(validating:))
-    var output: Output
+    var output: Output = .stdout
 
     func run() throws {
         try ManifestJoin.joinFiles(
