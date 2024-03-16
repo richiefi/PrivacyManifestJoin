@@ -8,7 +8,7 @@ let package = Package(
     platforms: [.macOS(.v14)],
     products: [
         .executable(
-            name: "privacy-manifest-join",
+            name: "privacy-manifest-util",
             targets: [
                 "PrivacyManifestJoinCLI",
             ]
