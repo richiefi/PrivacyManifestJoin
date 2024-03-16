@@ -7,7 +7,7 @@ struct PrivacyManifestUtil: ParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "privacy-manifest-util",
         abstract: "Work with privacy manifest files",
-        subcommands: [Join.self]
+        subcommands: [Join.self, FromNutrition.self]
     )
 }
 
@@ -35,6 +35,23 @@ struct Join: ParsableCommand {
     }
 }
 
+struct FromNutrition: ParsableCommand {
+    static let configuration
+        = CommandConfiguration(abstract: "Convert nutrition label JSON to manifest.")
+
+    @Argument(
+        help: "Nutrition label JSON file to read or - for stdin. Defaults to stdin",
+        transform: Input.init(validating:)
+    )
+    var nutrition: Input = .stdin
+
+    @Argument(help: "Manifest file to write or - for stdout. Defaults to stdout", transform: Output.init(validating:))
+    var manifest: Output = .stdout
+
+    func run() throws {
+        try ManifestConvert.nutritionPrivacyDetailsToManifest(input: self.nutrition, output: self.manifest)
+    }
+}
 
 extension FileURL {
     init(validating string: String) throws {
