@@ -1,10 +1,14 @@
 import Foundation
 
+/// Manifest join functions.
 public enum ManifestJoin {
+    /// Manifest join failures.
     public enum Failure: Error {
+        /// Thrown when trying to join an empty manifest list.
         case emptyManifestList
     }
 
+    /// Join manifest files from `locations` and output the result into `output`.
     public static func joinFiles(
         locations: [URL],
         output: Output
@@ -15,6 +19,7 @@ public enum ManifestJoin {
         try output.write(data: outputData)
     }
 
+    /// Join manifest files from `sources` and return the combined manifest.
     public static func joinSources(
         sources: [() throws -> Data]
     ) throws -> Manifest {
@@ -32,7 +37,9 @@ public enum ManifestJoin {
     }
 }
 
+/// Manifest conversion functions.
 public enum ManifestConvert {
+    /// Convert a nutrition privacy details file from `input` into a manifest and save the result in `output.`
     public static func nutritionPrivacyDetailsToManifest(
         input: Input,
         output: Output
@@ -43,6 +50,7 @@ public enum ManifestConvert {
         try output.write(data: outputData)
     }
 
+    /// Convert nutrition privacy details file contents into a manifest.
     public static func nutritionPrivacyDetailsToManifest(
         data: Data
     ) throws -> Manifest {
@@ -51,6 +59,7 @@ public enum ManifestConvert {
         return manifest
     }
 
+    /// Convert a manifest file from `input` into a nutrition privacy details file and save the result in `output.`
     public static func manifestToNutritionPrivacyDetails(
         input: Input,
         output: Output
@@ -61,6 +70,7 @@ public enum ManifestConvert {
         try output.write(data: outputData)
     }
 
+    /// Convert manifest file contents into nutrition privacy details.
     public static func manifestToNutritionPrivacyDetails(
         data: Data
     ) throws -> NutritionPrivacyDetails {

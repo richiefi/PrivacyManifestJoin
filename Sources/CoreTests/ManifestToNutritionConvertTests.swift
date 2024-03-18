@@ -1,5 +1,5 @@
 import CustomDump
-import PrivacyManifestJoinCore
+import PrivacyManifestUtilCore
 import XCTest
 
 final class ManifestToNutritionConvertTests: XCTestCase {
