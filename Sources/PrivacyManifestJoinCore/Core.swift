@@ -54,6 +54,24 @@ public enum ManifestConvert {
         let manifest = try privacyDetails.toManifest()
         return manifest
     }
+
+    public static func manifestToNutritionPrivacyDetails(
+        input: Input,
+        output: Output
+    ) throws {
+        let data = try input.read()
+        let nutrition = try self.manifestToNutritionPrivacyDetails(data: data)
+        let outputData = try JSONEncoder().encode(nutrition)
+        try output.write(data: outputData)
+    }
+
+    public static func manifestToNutritionPrivacyDetails(
+        data: Data
+    ) throws -> NutritionPrivacyDetails {
+        let manifest = try decoder.decode(Manifest.self, from: data)
+        let nutrition = try NutritionPrivacyDetails(manifest: manifest)
+        return nutrition
+    }
 }
 
 let decoder = PropertyListDecoder()

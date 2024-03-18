@@ -96,6 +96,12 @@ public struct NutritionPrivacyDetail: Equatable, Codable {
     public var purposes: [NutritionPurpose]
     public var protections: NutritionDataProtections
 
+    public init(category: NutritionCategory, purposes: [NutritionPurpose], protections: NutritionDataProtections) {
+        self.category = category
+        self.purposes = purposes
+        self.protections = protections
+    }
+
     enum CodingKeys: String, CodingKey {
         case category
         case purposes
