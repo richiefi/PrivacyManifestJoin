@@ -4,13 +4,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "PrivacyManifestJoin",
+    name: "PrivacyManifestUtil",
     platforms: [.macOS(.v14)],
     products: [
         .executable(
             name: "privacy-manifest-util",
             targets: [
-                "PrivacyManifestJoinCLI",
+                "PrivacyManifestUtilCLI",
             ]
         ),
     ],
@@ -20,17 +20,17 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "PrivacyManifestJoinCLI",
+            name: "PrivacyManifestUtilCLI",
             dependencies: [
-                "PrivacyManifestJoinCore",
+                "PrivacyManifestUtilCore",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
-        .target(name: "PrivacyManifestJoinCore"),
+        .target(name: "PrivacyManifestUtilCore"),
         .testTarget(
             name: "CoreTests",
             dependencies: [
-                "PrivacyManifestJoinCore",
+                "PrivacyManifestUtilCore",
                 .product(name: "CustomDump", package: "swift-custom-dump"),
             ]
         ),
