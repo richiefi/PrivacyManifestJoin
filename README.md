@@ -1,5 +1,8 @@
 # privacy-manifest-util
 
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frichiefi%2FPrivacyManifestUtil%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/richiefi/PrivacyManifestUtil)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frichiefi%2FPrivacyManifestUtil%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/richiefi/PrivacyManifestUtil)
+
 `privacy-manifest-util` is a command line tool and a Swift library for 
 manipulating [privacy manifest files] (`PrivacyInfo.xcprivacy`) and App Store Connect nutrition 
 label JSON files as [used by Fastlane][fastlane-privacy-details] (`app_privacy_details.json`).
