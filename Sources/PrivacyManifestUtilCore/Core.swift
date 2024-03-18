@@ -1,9 +1,5 @@
 import Foundation
 
-public enum JoinFailure: Error {
-    case emptyLocations
-}
-
 public enum ManifestJoin {
     public enum Failure: Error {
         case emptyManifestList
