@@ -62,11 +62,16 @@ public enum ManifestConvert {
     /// Convert a manifest file from `input` into a nutrition privacy details file and save the result in `output.`
     public static func manifestToNutritionPrivacyDetails(
         input: Input,
-        output: Output
+        output: Output,
+        pretty: Bool
     ) throws {
         let data = try input.read()
         let nutrition = try self.manifestToNutritionPrivacyDetails(data: data)
-        let outputData = try JSONEncoder().encode(nutrition)
+        let encoder = JSONEncoder()
+        if pretty {
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        }
+        let outputData = try encoder.encode(nutrition)
         try output.write(data: outputData)
     }
 

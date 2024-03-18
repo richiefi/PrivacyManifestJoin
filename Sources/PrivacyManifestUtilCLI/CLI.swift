@@ -66,8 +66,15 @@ struct ToNutrition: ParsableCommand {
     @Argument(help: "Nutrition label JSON file to write or - for stdout. Defaults to stdout", transform: Output.init(validating:))
     var nutrition: Output = .stdout
 
+    @Flag(name: .long, help: "Pretty print JSON")
+    var pretty = false
+
     func run() throws {
-        try ManifestConvert.manifestToNutritionPrivacyDetails(input: self.manifest, output: self.nutrition)
+        try ManifestConvert.manifestToNutritionPrivacyDetails(
+            input: self.manifest,
+            output: self.nutrition,
+            pretty: self.pretty
+        )
     }
 }
 
