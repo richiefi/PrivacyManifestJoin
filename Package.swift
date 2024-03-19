@@ -14,8 +14,8 @@ let package = Package(
             ]
         ),
         .library(
-            name: "PrivacyManifestUtilCore",
-            targets: ["PrivacyManifestUtilCore"]
+            name: "PrivacyManifestKit",
+            targets: ["PrivacyManifestKit"]
         ),
     ],
     dependencies: [
@@ -26,15 +26,15 @@ let package = Package(
         .executableTarget(
             name: "PrivacyManifestUtilCLI",
             dependencies: [
-                "PrivacyManifestUtilCore",
+                "PrivacyManifestKit",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
-        .target(name: "PrivacyManifestUtilCore"),
+        .target(name: "PrivacyManifestKit"),
         .testTarget(
             name: "CoreTests",
             dependencies: [
-                "PrivacyManifestUtilCore",
+                "PrivacyManifestKit",
                 .product(name: "CustomDump", package: "swift-custom-dump"),
             ]
         ),

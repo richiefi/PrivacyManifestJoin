@@ -1,6 +1,6 @@
 import ArgumentParser
 import Foundation
-import PrivacyManifestUtilCore
+import PrivacyManifestKit
 
 @main
 struct PrivacyManifestUtil: ParsableCommand {
