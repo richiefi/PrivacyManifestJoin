@@ -13,6 +13,10 @@ let package = Package(
                 "PrivacyManifestUtilCLI",
             ]
         ),
+        .library(
+            name: "PrivacyManifestUtilCore",
+            targets: ["PrivacyManifestUtilCore"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
