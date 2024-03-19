@@ -1,7 +1,16 @@
+/// Top-level type representing a complete privacy manifest.
 public struct Manifest: Codable, Equatable {
+    /// Accessed API types.
+    /// `NSPrivacyAccessedAPITypes` in the manifest file.
     public var accessedAPITypes: APITypes
+    /// Collected data types.
+    /// `NSPrivacyCollectedDataTypes` in the manifest file.
     public var collectedDataTypes: CollectedDataTypes
+    /// Indicates whether the package uses data for tracking.
+    /// `NSPrivacyTracking` in the manifest file.
     public var tracking: Bool
+    /// Lists the internet domains the package connects to that engage in tracking.
+    /// `NSPrivacyTrackingDomains` in the manifest file.
     public var trackingDomains: [String]
 
     enum CodingKeys: String, CodingKey {
@@ -36,6 +45,7 @@ public struct Manifest: Codable, Equatable {
     }
 }
 
+/// Describes the data types the package collects.
 public struct CollectedDataTypes: Codable, Equatable {
     public var dataTypes: [CollectedDataType]
 
@@ -56,6 +66,7 @@ public struct CollectedDataTypes: Codable, Equatable {
     public static let empty = CollectedDataTypes(dataTypes: [])
 }
 
+/// Name of a collected data type.
 public struct PrivacyDataType: WrappedRawString {
     public var rawValue: String
 
@@ -64,6 +75,7 @@ public struct PrivacyDataType: WrappedRawString {
     }
 }
 
+/// Name of a collection purpose.
 public struct CollectionPurpose: WrappedRawString {
     public var rawValue: String
 
@@ -72,10 +84,18 @@ public struct CollectionPurpose: WrappedRawString {
     }
 }
 
+/// Describes a single data types the package collects.
 public struct CollectedDataType: Codable, Equatable {
+    /// The collected data type. `NSPrivacyCollectedDataType` in the manifest file.
     public var dataType: PrivacyDataType
+    /// Indicates whether the package links this data type to the user’s identity.
+    /// `NSPrivacyCollectedDataTypeLinked` in the manifest file.
     public var linked: Bool
+    /// Lists the reasons the package collects the data.
+    /// `NSPrivacyCollectedDataTypePurposes` in the manifest file.
     public var purposes: [CollectionPurpose]
+    /// Indicates whether the package uses this data type to track.
+    /// `NSPrivacyCollectedDataTypeTracking` in the manifest file.
     public var tracking: Bool
 
     enum CodingKeys: String, CodingKey {
@@ -98,6 +118,7 @@ public struct CollectedDataType: Codable, Equatable {
     }
 }
 
+/// Describes the API types the package uses.
 public struct APITypes: Codable, Equatable {
     var apiTypes: [APIType]
 
@@ -118,6 +139,7 @@ public struct APITypes: Codable, Equatable {
     public static let empty = APITypes(apiTypes: [])
 }
 
+/// Name of an API the package uses.
 public struct APIName: WrappedRawString {
     public var rawValue: String
 
@@ -126,6 +148,7 @@ public struct APIName: WrappedRawString {
     }
 }
 
+/// Name of a reason for API usage.
 public struct APIReason: WrappedRawString {
     public var rawValue: String
 
@@ -134,6 +157,7 @@ public struct APIReason: WrappedRawString {
     }
 }
 
+/// A single API being used and the reasons for the usage.
 public struct APIType: Codable, Equatable {
     public var apiTypeName: APIName
     public var apiTypeReasons: [APIReason]
